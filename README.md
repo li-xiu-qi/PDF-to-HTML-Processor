@@ -3,6 +3,7 @@
 PDF-to-HTML-Processor是一个处理pdf文件的项目，用于将PDF文件转换为HTML格式，并提取文本、图片、元数据等信息。它使用fitz和BeautifulSoup库来实现PDF的读取和HTML的生成。最终以生成器的方式输出一个个和langchain中Document类相同的对象。
 ## 功能特性
 - 提取PDF中的文本、图片和元数据
+- 文本将按照标题分成多块
 - 将PDF转换为HTML格式
 - 保存提取的图片到本地
 - 支持嵌入标题到页面内容中
