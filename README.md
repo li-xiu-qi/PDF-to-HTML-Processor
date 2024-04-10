@@ -29,5 +29,5 @@ for doc in processor.process_pdf(embed_titles=True):
 - 如果要保存提取的图片，请确保指定一个有效的图片存储目录
 - 本项目仅支持提取PDF中的文本、图片和表格，不支持其他复杂元素（如注释、书签等）
 ## 联系方式
-如果有任何问题或建议，请通过邮箱（xiaoke-work.com）联系我。
+如果有任何问题或建议，请通过邮箱（xiaoke-work@qq.com）联系我。
 
