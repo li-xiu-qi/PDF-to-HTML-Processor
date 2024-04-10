@@ -1,3 +1,7 @@
+import asyncio
+from pprint import pprint
+
+import fitz
 import hashlib
 import os
 from base64 import b64decode
@@ -96,7 +100,7 @@ class PdfHtmlProcessor:
         dt = datetime(year, month, day, hour, minute, second)
         return dt.strftime('%Y-%m-%d %H:%M:%S')
 
-    def process_pdf(self, embed_titles: bool = False) -> Iterator[Document]:
+    def process_pdf(self, embed_titles: bool = False, exact_images: bool = False) -> Iterator[Document]:
         """
         处理PDF文件，提取文本、图片、表格等信息，并以Document对象的形式返回处理结果。
 
@@ -159,11 +163,15 @@ class PdfHtmlProcessor:
                         self.table_text_list.clear()
 
                 elif child.name == "p":
-                    # 处理图片
-                    image_path = self._check_and_decode_base64_image(child.find("img"))
+                    if exact_images:
 
-                    if image_path:
-                        self.image_paths.append(image_path)
+                        # 处理图片
+                        image_path = self._check_and_decode_base64_image(child.find("img"))
+
+                        if image_path:
+                            self.image_paths.append(image_path)
+                        else:
+                            self.accumulated_text += child.get_text()
                     else:
                         self.accumulated_text += child.get_text()
 
@@ -188,14 +196,27 @@ class PdfHtmlProcessor:
             self.table_text_list.clear()
 
 
-if __name__ == "__main__":
-    pdf_path = "test.pdf"
-    processor = PdfHtmlProcessor(pdf_path)
-    for doc in processor.process_pdf():
-        pass
-        # 打印页面内容和长度，以及元数据
-        print(doc.page_content)
-        print(len(doc.page_content))
-        # print(doc.metadata)
-        print("===================================== " + "\n" * 2)
+class PDFSplitAgent:
+    def __init__(self, pdf_path: str, chunk_size: int = 960, chunk_overlap: int = 100):
+        self.pdf_path = pdf_path
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
 
+    async def split_agent_pdf(self, embed_titles: bool = False) -> Iterator[Document]:
+        pdf_obj = PdfHtmlProcessor(self.pdf_path)
+        for document in pdf_obj.process_pdf(embed_titles=embed_titles):
+            yield document
+
+
+async def main():
+    pdf_path = "test.pdf"
+    pdf_split_agent = PDFSplitAgent(pdf_path)
+    doc = pdf_split_agent.split_agent_pdf(embed_titles=True)
+    async for doc in doc:
+        print(doc.page_content)
+        print(doc.metadata)
+        print("=====================================")
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
