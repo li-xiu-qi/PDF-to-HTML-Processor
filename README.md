@@ -10,7 +10,7 @@ PDF-to-HTML-Processor是一个处理pdf文件的项目，用于将PDF文件转�
 - 提取表格内容并保存为JSON格式
 ## 安装
 1. 安装Python（建议使用Python 3.8及以上版本）
-2. 安装依赖库：`pip install fitz beautifulsoup4 pandas langchain`
+2. 安装依赖库：`pip install pymupdf beautifulsoup4 pandas langchain`
 ## 使用方法
 1. 创建PdfHtmlProcessor对象，传入PDF文件路径和其他可选参数
 2. 调用process_pdf()方法，传入embed_titles参数（可选，默认为False）
